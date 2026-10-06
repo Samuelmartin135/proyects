@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Paris Smiles Design · Pagar con Zelle</title>
+<meta name="description" content="Paga tu depósito o tratamiento en Paris Smiles Design con Zelle.">
+<meta name="theme-color" content="#14060f">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#14060f;
+    --plum:#3a0d33;
+    --plum-2:#5e1352;
+    --magenta:#a3176f;
+    --pink:#e0218a;
+    --pink-soft:#f6a8d3;
+    --ink:#fff;
+    --muted:rgba(255,255,255,.68);
+    --line:rgba(255,255,255,.12);
+    --glass:rgba(255,255,255,.06);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{min-height:100%}
+  body{
+    font-family:Montserrat,system-ui,-apple-system,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(120% 60% at 50% -10%, #6b1660 0%, transparent 60%),
+      radial-gradient(80% 50% at 100% 100%, rgba(224,33,138,.25) 0%, transparent 60%),
+      var(--bg);
+    background-attachment:fixed;
+    -webkit-font-smoothing:antialiased;
+    display:flex;justify-content:center;
+    padding:max(28px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
+  }
+  main{width:100%;max-width:430px;display:flex;flex-direction:column;align-items:center}
+
+  .lang{align-self:flex-end;display:flex;gap:2px;background:var(--glass);border:1px solid var(--line);border-radius:999px;padding:3px;margin-bottom:18px}
+  .lang button{font:600 11px/1 Montserrat,sans-serif;letter-spacing:.08em;color:var(--muted);background:none;border:0;border-radius:999px;padding:7px 11px;cursor:pointer}
+  .lang button[aria-pressed="true"]{background:var(--pink);color:#fff}
+
+  /* Logo */
+  .logo{
+    width:148px;height:148px;border-radius:50%;
+    padding:4px;
+    background:conic-gradient(from 200deg,#f9c74f,#f3722c,#e0218a,#9b2fae,#f9c74f);
+    box-shadow:0 18px 50px rgba(224,33,138,.35);
+  }
+  .logo-inner{
+    width:100%;height:100%;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #8a1f7c 0%, #5a1250 45%, #3a0b35 100%);
+    border:3px solid var(--bg);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .wordmark{display:flex;align-items:flex-end;font-family:"Cormorant Garamond",serif;font-weight:600;font-size:38px;line-height:.8;letter-spacing:.06em;color:#fbe9f4}
+  .wordmark svg{width:27px;height:34px;margin:0 1px -1px}
+  .tagline{margin-top:8px;font-size:7px;letter-spacing:.42em;color:#f3cfe5;padding-left:.42em}
+
+  h1{margin-top:22px;font-family:"Cormorant Garamond",serif;font-style:italic;font-weight:600;font-size:30px;letter-spacing:.02em;text-align:center}
+  .sub{margin-top:6px;color:var(--muted);font-size:14px;text-align:center}
+
+  /* Payment card */
+  .card{
+    margin-top:24px;width:100%;
+    background:linear-gradient(160deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
+    border:1px solid var(--line);border-radius:24px;
+    padding:22px 18px 20px;
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    box-shadow:0 24px 60px rgba(0,0,0,.35);
+  }
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--pink-soft)}
+  .chip i{width:8px;height:8px;border-radius:50%;background:#2fd47a;box-shadow:0 0 0 4px rgba(47,212,122,.18)}
+  .label{margin-top:16px;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .value{margin-top:6px;font-size:17px;font-weight:700}
+  .email{
+    margin-top:8px;padding:14px 14px;border-radius:14px;
+    background:rgba(0,0,0,.28);border:1px dashed rgba(246,168,211,.45);
+    font-size:16px;font-weight:600;word-break:break-all;text-align:center;
+    user-select:all;-webkit-user-select:all;
+  }
+  .btn{
+    display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+    border:0;border-radius:16px;cursor:pointer;text-decoration:none;
+    font:700 16px/1 Montserrat,sans-serif;letter-spacing:.02em;
+    padding:18px;margin-top:14px;color:#fff;
+    transition:transform .12s ease, filter .2s ease;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn svg{width:20px;height:20px;flex:none}
+  .btn-primary{background:linear-gradient(135deg,var(--pink) 0%,var(--magenta) 55%,var(--plum-2) 100%);box-shadow:0 12px 30px rgba(224,33,138,.4)}
+  .btn-primary.done{background:linear-gradient(135deg,#2fd47a,#17a35a);box-shadow:0 12px 30px rgba(47,212,122,.35)}
+  .btn-ghost{background:var(--glass);border:1px solid var(--line);font-size:15px}
+
+  .verify{display:flex;gap:10px;margin-top:16px;padding:12px 14px;border-radius:14px;background:rgba(246,168,211,.08);border:1px solid rgba(246,168,211,.2);font-size:12.5px;line-height:1.5;color:#f8dcec}
+  .verify svg{width:18px;height:18px;flex:none;margin-top:1px;color:var(--pink-soft)}
+
+  /* Steps */
+  .section-title{align-self:flex-start;margin-top:30px;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--pink-soft)}
+  ol.steps{list-style:none;width:100%;margin-top:12px;display:grid;gap:10px}
+  ol.steps li{display:flex;align-items:center;gap:14px;padding:14px;border-radius:16px;background:var(--glass);border:1px solid var(--line);font-size:14px;line-height:1.4}
+  ol.steps b{font-weight:700}
+  .num{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:700 14px Montserrat,sans-serif;background:linear-gradient(135deg,var(--pink),var(--plum-2))}
+
+  .deposit{width:100%;margin-top:14px;padding:16px;border-radius:16px;background:linear-gradient(135deg,rgba(163,23,111,.35),rgba(58,13,51,.5));border:1px solid rgba(224,33,138,.35);font-size:13px;line-height:1.55;color:#f6e3ee}
+  .deposit strong{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--pink-soft);margin-bottom:4px}
+
+  footer{margin-top:34px;text-align:center;color:var(--muted);font-size:12px;line-height:1.8}
+  footer a{color:var(--muted);text-decoration:none}
+  footer .social{display:flex;justify-content:center;gap:12px;margin-bottom:10px}
+  footer .social a{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--glass);border:1px solid var(--line)}
+  footer .social svg{width:18px;height:18px;color:#fff}
+
+  .toast{position:fixed;left:50%;bottom:max(24px, env(safe-area-inset-bottom));transform:translate(-50%,120px);background:#fff;color:#2a0a24;font-weight:700;font-size:14px;padding:12px 20px;white-space:nowrap;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.35);opacity:0;visibility:hidden;transition:transform .3s cubic-bezier(.2,.9,.3,1.2),opacity .2s,visibility .3s;z-index:10}
+  .toast.show{transform:translate(-50%,0);opacity:1;visibility:visible}
+
+  .fade{animation:fade .6s ease both}
+  .fade:nth-child(3){animation-delay:.05s}.fade:nth-child(4){animation-delay:.1s}.fade:nth-child(5){animation-delay:.15s}
+  @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.fade{animation:none}.toast{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="lang" role="group" aria-label="Idioma / Language">
+    <button type="button" data-set-lang="es" aria-pressed="true">ES</button>
+    <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
+  </div>
+
+  <div class="logo fade" aria-label="Paris Smiles Design">
+    <div class="logo-inner">
+      <div class="wordmark" aria-hidden="true">
+        <span>P</span>
+        <!-- Eiffel tower as the "A" -->
+        <svg viewBox="0 0 54 68" fill="none" stroke="#fbe9f4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M27 2v6"/>
+          <path d="M24 8h6l1 10h-8z"/>
+          <path d="M23 18 15 44M31 18l8 26"/>
+          <path d="M20 31h14"/>
+          <path d="M12 44h30"/>
+          <path d="M15 44 5 66M39 44l10 22"/>
+          <path d="M18 66c0-8 4-13 9-13s9 5 9 13"/>
+          <path d="M2 66h11M41 66h11"/>
+        </svg>
+        <span>RIS</span>
+      </div>
+      <div class="tagline">SMILES DESIGN</div>
+    </div>
+  </div>
+
+  <h1 class="fade" data-i18n="title">Paga con Zelle</h1>
+  <p class="sub fade" data-i18n="subtitle">Rápido, seguro y sin comisiones</p>
+
+  <section class="card fade">
+    <span class="chip"><i></i><span data-i18n="chip">Pago por Zelle</span></span>
+
+    <p class="label" data-i18n="toLabel">Enviar a</p>
+    <p class="value">Paris Smiles Design</p>
+
+    <p class="label" data-i18n="emailLabel">Correo Zelle</p>
+    <p class="email" id="email">parissmilesdesign@gmail.com</p>
+
+    <button class="btn btn-primary" id="copyBtn" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <span data-i18n="copy">Copiar correo</span>
+    </button>
+
+    <div class="verify">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      <span data-i18n="verify">Antes de enviar, confirma que el destinatario aparezca como <b>Paris Smiles Design</b>.</span>
+    </div>
+  </section>
+
+  <h2 class="section-title" data-i18n="howTitle">Cómo pagar</h2>
+  <ol class="steps">
+    <li><span class="num">1</span><span data-i18n="step1">Toca <b>Copiar correo</b>.</span></li>
+    <li><span class="num">2</span><span data-i18n="step2">Abre la app de tu <b>banco</b> y entra a <b>Zelle</b>.</span></li>
+    <li><span class="num">3</span><span data-i18n="step3">Pega el correo, escribe el monto y tu <b>nombre completo</b> en la nota.</span></li>
+    <li><span class="num">4</span><span data-i18n="step4">Envíanos la captura del pago por <b>WhatsApp</b>.</span></li>
+  </ol>
+
+  <a class="btn btn-ghost" id="waBtn" href="https://wa.me/13052007862" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1s-.5-.1-.7.1-.8 1-1 1.2-.4.2-.7.1a8 8 0 0 1-2.4-1.5 9 9 0 0 1-1.6-2c-.2-.3 0-.5.1-.6l.5-.5.3-.5v-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6a1.1 1.1 0 0 0-.8.4 3.4 3.4 0 0 0-1 2.5 5.9 5.9 0 0 0 1.2 3.1 13.4 13.4 0 0 0 5.2 4.6c1.9.8 2.7.9 3.6.7a3.1 3.1 0 0 0 2-1.4 2.5 2.5 0 0 0 .2-1.4c-.1-.2-.3-.3-.7-.4zM12 21.8a9.8 9.8 0 0 1-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4A9.8 9.8 0 1 1 12 21.8zm8.4-18.2A11.8 11.8 0 0 0 1.8 17.8L.1 24l6.4-1.7a11.8 11.8 0 0 0 5.6 1.4 11.8 11.8 0 0 0 8.4-20.1z"/></svg>
+    <span data-i18n="whatsapp">Enviar comprobante por WhatsApp</span>
+  </a>
+
+  <div class="deposit">
+    <strong data-i18n="depTitle">Depósito de reserva</strong>
+    <span data-i18n="depText">Para garantizar tu cita se requiere un depósito de $100, que se descuenta del valor total del procedimiento.</span>
+  </div>
+
+  <footer>
+    <div class="social">
+      <a href="https://instagram.com/parissmilesdesign" target="_blank" rel="noopener" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a href="https://www.parissmilesdesign.com" target="_blank" rel="noopener" aria-label="Website">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
+      </a>
+      <a href="https://maps.google.com/?q=13+NW+19th+Ave,+Miami,+FL" target="_blank" rel="noopener" aria-label="Maps">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </a>
+    </div>
+    <div data-i18n="tagline">Tu sonrisa, nuestra obra de arte</div>
+    <div>13 NW 19th Ave, Miami, FL</div>
+    <div><a href="tel:+13052007862">(305) 200-7862</a> · <a href="tel:+13057858422">(305) 785-8422</a></div>
+  </footer>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+  const EMAIL = "parissmilesdesign@gmail.com";
+  const WA_NUMBER = "13052007862";
+
+  const T = {
+    es:{
+      title:"Paga con Zelle", subtitle:"Rápido, seguro y sin comisiones", chip:"Pago por Zelle",
+      toLabel:"Enviar a", emailLabel:"Correo Zelle", copy:"Copiar correo", copied:"¡Correo copiado!",
+      toast:"✓ Correo copiado. Ahora abre tu banco.",
+      verify:"Antes de enviar, confirma que el destinatario aparezca como <b>Paris Smiles Design</b>.",
+      howTitle:"Cómo pagar",
+      step1:"Toca <b>Copiar correo</b>.",
+      step2:"Abre la app de tu <b>banco</b> y entra a <b>Zelle</b>.",
+      step3:"Pega el correo, escribe el monto y tu <b>nombre completo</b> en la nota.",
+      step4:"Envíanos la captura del pago por <b>WhatsApp</b>.",
+      whatsapp:"Enviar comprobante por WhatsApp",
+      waMsg:"Hola Paris Smiles Design 👋 Acabo de enviar mi pago por Zelle. Aquí está mi comprobante:",
+      depTitle:"Depósito de reserva",
+      depText:"Para garantizar tu cita se requiere un depósito de $100, que se descuenta del valor total del procedimiento.",
+      tagline:"Tu sonrisa, nuestra obra de arte"
+    },
+    en:{
+      title:"Pay with Zelle", subtitle:"Fast, secure and no fees", chip:"Zelle payment",
+      toLabel:"Send to", emailLabel:"Zelle email", copy:"Copy email", copied:"Email copied!",
+      toast:"✓ Email copied. Now open your bank app.",
+      verify:"Before sending, make sure the recipient shows as <b>Paris Smiles Design</b>.",
+      howTitle:"How to pay",
+      step1:"Tap <b>Copy email</b>.",
+      step2:"Open your <b>bank app</b> and go to <b>Zelle</b>.",
+      step3:"Paste the email, enter the amount and your <b>full name</b> in the memo.",
+      step4:"Send us a screenshot of the payment on <b>WhatsApp</b>.",
+      whatsapp:"Send receipt on WhatsApp",
+      waMsg:"Hi Paris Smiles Design 👋 I just sent my payment via Zelle. Here is my receipt:",
+      depTitle:"Booking deposit",
+      depText:"A $100 deposit is required to secure your appointment. It is deducted from the total cost of your procedure.",
+      tagline:"Your smile, our work of art"
+    }
+  };
+
+  let lang = (navigator.language || "es").toLowerCase().startsWith("en") ? "en" : "es";
+  try { const saved = localStorage.getItem("psd-lang"); if (saved && T[saved]) lang = saved; } catch(e){}
+
+  const copyBtn = document.getElementById("copyBtn");
+  const copyLabel = copyBtn.querySelector("span");
+  const toast = document.getElementById("toast");
+  const waBtn = document.getElementById("waBtn");
+
+  function applyLang(l){
+    lang = l;
+    document.documentElement.lang = l;
+    document.querySelectorAll("[data-i18n]").forEach(el => { el.innerHTML = T[l][el.dataset.i18n]; });
+    document.querySelectorAll("[data-set-lang]").forEach(b => b.setAttribute("aria-pressed", b.dataset.setLang === l));
+    waBtn.href = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(T[l].waMsg);
+    copyBtn.classList.remove("done");
+    try { localStorage.setItem("psd-lang", l); } catch(e){}
+  }
+  document.querySelectorAll("[data-set-lang]").forEach(b => b.addEventListener("click", () => applyLang(b.dataset.setLang)));
+
+  function fallbackCopy(text){
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.setAttribute("readonly",""); ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select(); ta.setSelectionRange(0, text.length);
+    let ok = false; try { ok = document.execCommand("copy"); } catch(e){}
+    document.body.removeChild(ta); return ok;
+  }
+
+  let toastTimer;
+  copyBtn.addEventListener("click", async () => {
+    let ok = false;
+    try { await navigator.clipboard.writeText(EMAIL); ok = true; } catch(e){ ok = fallbackCopy(EMAIL); }
+    if (!ok) { // last resort: select the text so the user can copy it
+      const r = document.createRange(); r.selectNodeContents(document.getElementById("email"));
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r); return;
+    }
+    copyBtn.classList.add("done");
+    copyLabel.textContent = T[lang].copied;
+    if (navigator.vibrate) navigator.vibrate(30);
+    toast.textContent = T[lang].toast; toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toast.classList.remove("show");
+      copyBtn.classList.remove("done");
+      copyLabel.textContent = T[lang].copy;
+    }, 2600);
+  });
+
+  applyLang(lang);
+</script>
+</body>
+</html>
