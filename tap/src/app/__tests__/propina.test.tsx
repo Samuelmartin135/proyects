@@ -1,11 +1,12 @@
 import { render, screen, userEvent } from '@testing-library/react-native';
-import { Alert } from 'react-native';
 
 import PropinaScreen from '../cobro/propina';
 
 let mockParams: Record<string, string> = { amount: '12500' };
+const mockPush = jest.fn();
 jest.mock('expo-router', () => ({
   useLocalSearchParams: () => mockParams,
+  useRouter: () => ({ push: mockPush }),
 }));
 
 describe('Pantalla Propina', () => {
@@ -61,14 +62,17 @@ describe('Pantalla Propina', () => {
     expect(screen.getByText(/No se encontró el valor a cobrar/)).toBeOnTheScreen();
   });
 
-  it('el botón cobrar responde (el cobro con tarjeta llega en el paso 3)', async () => {
-    const alert = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
+  it('al cobrar pasa a "Acerque la tarjeta" con el valor y la propina', async () => {
+    mockPush.mockClear();
     const user = userEvent.setup();
     await render(<PropinaScreen />);
 
+    await user.press(screen.getByTestId('tip-10'));
     await user.press(screen.getByTestId('confirm-charge'));
 
-    expect(alert).toHaveBeenCalled();
-    alert.mockRestore();
+    expect(mockPush).toHaveBeenCalledWith({
+      pathname: '/cobro/tarjeta',
+      params: { amount: '12500', tip: '1250' },
+    });
   });
 });

@@ -17,7 +17,9 @@ export const colors = {
   successSoft: '#E3F5EC',
   danger: '#C62828', // pago rechazado / acciones destructivas
   dangerSoft: '#FDECEC',
-  warning: '#B26A00', // modo demo, avisos
+  warning: '#B26A00', // avisos
+  testMode: '#F59E0B', // naranja del modo Prueba (como Stripe)
+  onTestMode: '#111111',
 
   background: '#FFFFFF',
   surface: '#FFFFFF',

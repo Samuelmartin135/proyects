@@ -13,6 +13,13 @@ export type SaleStatus =
 
 export type PaymentProviderId = 'mock' | 'sumup';
 
+/**
+ * Modo de la app, como en Stripe:
+ * - 'test' (Prueba): cobros simulados, sin dinero real.
+ * - 'live' (Real): cobros de verdad; exige verificación de identidad aprobada.
+ */
+export type AppMode = 'test' | 'live';
+
 export type Sale = {
   /** UUID generado en la app; también es la referencia del cobro ante el proveedor. */
   id: string;
@@ -21,7 +28,10 @@ export type Sale = {
   /** Propina en pesos (0 si no hubo). */
   tip: number;
   status: SaleStatus;
+  mode: AppMode;
   provider: PaymentProviderId;
+  /** Id del cobro en el sistema del proveedor (para conciliar y reembolsar). */
+  providerTransactionId: string | null;
   /** Marca de la tarjeta (Visa, Mastercard…). Nunca números de tarjeta. */
   cardBrand: string | null;
   /** Explicación en español cuando no se pudo cobrar. */

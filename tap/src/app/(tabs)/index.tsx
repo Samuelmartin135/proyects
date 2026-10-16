@@ -2,7 +2,11 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { useDaySales } from '@/data/useDaySales';
+import { todayKey } from '@/lib/dates';
 import { applyKeypadKey, formatCOP, validateSaleAmount } from '@/lib/money';
+import { summarizeSales } from '@/lib/summary';
+import { useAppMode } from '@/mode/modeStore';
 import { AmountDisplay } from '@/ui/AmountDisplay';
 import { AppText } from '@/ui/AppText';
 import { BigButton } from '@/ui/BigButton';
@@ -20,10 +24,11 @@ export default function CobrarScreen() {
   const router = useRouter();
   const [amount, setAmount] = useState(0);
 
-  // TODO(paso 4): nombre real del negocio. TODO(paso 5): ventas reales de hoy.
+  const mode = useAppMode();
+  const today = useDaySales(todayKey(), mode);
+  const { totalSold, salesCount } = summarizeSales(today);
+  // TODO(paso 4): nombre real del negocio.
   const businessName = 'Su negocio';
-  const soldToday = 0;
-  const salesCount = 0;
 
   const validation = validateSaleAmount(amount);
   // Solo mostramos el aviso cuando ya hay algo digitado: en $0 sería ruido.
@@ -37,7 +42,12 @@ export default function CobrarScreen() {
 
   return (
     <Screen style={styles.screen}>
-      <SalesCard businessName={businessName} soldToday={soldToday} salesCount={salesCount} demo />
+      <SalesCard
+        businessName={businessName}
+        soldToday={totalSold}
+        salesCount={salesCount}
+        testMode={mode === 'test'}
+      />
 
       <View style={styles.amountArea}>
         <AmountDisplay amount={amount} testID="charge-amount" />

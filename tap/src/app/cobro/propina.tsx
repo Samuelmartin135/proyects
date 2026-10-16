@@ -1,6 +1,6 @@
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 import { applyKeypadKey, formatCOP, parseAmountParam, validateCharge } from '@/lib/money';
 import { calculateTip, isSameTipOption, NO_TIP, TIP_PERCENTS, tipOptionLabel, type TipOption } from '@/lib/tip';
@@ -16,6 +16,7 @@ import { colors, spacing } from '@/ui/theme';
  * así que si no hay propina basta con tocar "Cobrar".
  */
 export default function PropinaScreen() {
+  const router = useRouter();
   const params = useLocalSearchParams<{ amount?: string }>();
   const amount = parseAmountParam(params.amount);
 
@@ -42,9 +43,8 @@ export default function PropinaScreen() {
   ];
 
   function charge() {
-    if (!validation.ok) return;
-    // TODO(paso 3): ir a la pantalla "Acerque la tarjeta" con el cobro simulado.
-    Alert.alert('Casi listo', `El cobro de ${formatCOP(total)} con tarjeta llega en el paso 3.`);
+    if (!validation.ok || amount === null) return;
+    router.push({ pathname: '/cobro/tarjeta', params: { amount: String(amount), tip: String(tip) } });
   }
 
   return (

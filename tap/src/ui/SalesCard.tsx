@@ -11,8 +11,8 @@ type Props = {
   /** Total vendido hoy (sin propinas). */
   soldToday: number;
   salesCount: number;
-  /** Muestra la etiqueta DEMO cuando los cobros son simulados. */
-  demo?: boolean;
+  /** Muestra la etiqueta PRUEBA cuando los cobros son simulados. */
+  testMode?: boolean;
 };
 
 /**
@@ -22,7 +22,7 @@ type Props = {
  * pagos le consigna al comerciante en su cuenta bancaria. Por eso la tarjeta
  * muestra lo vendido hoy, no un saldo disponible.
  */
-export function SalesCard({ businessName, soldToday, salesCount, demo = false }: Props) {
+export function SalesCard({ businessName, soldToday, salesCount, testMode = false }: Props) {
   return (
     <View
       style={styles.card}
@@ -32,7 +32,7 @@ export function SalesCard({ businessName, soldToday, salesCount, demo = false }:
       }`}>
       <View style={styles.topRow}>
         <Text style={styles.brand}>{APP_NAME}</Text>
-        {demo ? <Text style={styles.demo}>DEMO</Text> : null}
+        {testMode ? <Text style={styles.testBadge}>PRUEBA</Text> : null}
       </View>
 
       <View>
@@ -72,9 +72,9 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     letterSpacing: 2,
   },
-  demo: {
-    color: colors.primary,
-    backgroundColor: '#FCD34D',
+  testBadge: {
+    color: colors.onTestMode,
+    backgroundColor: colors.testMode,
     fontSize: 12,
     fontWeight: '800',
     paddingHorizontal: 8,

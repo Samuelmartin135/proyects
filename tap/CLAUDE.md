@@ -27,7 +27,7 @@ EXPO_OFFLINE=1 npx expo export --platform android   # verifica que el bundle com
 - **No procesamos pagos.** Todo cobro pasa por la interfaz `PaymentProvider` (`src/payments/`):
   - `MockPaymentProvider`: demos y desarrollo.
   - `SumUpPaymentProvider`: esqueleto con TODOs hasta tener el SDK.
-  - Se elige con `EXPO_PUBLIC_PAYMENT_PROVIDER=mock|sumup`.
+  - Se elige según el modo (`src/payments/index.ts`): Prueba → mock y Real → SumUp.
 - **Nunca guardar ni registrar datos de tarjeta.** Eso incluye número, últimos 4 dígitos, vencimiento, titular y CVV. Lo único permitido es la marca (Visa, Mastercard…).
   - Los tipos propios no tienen campos para esos datos.
   - Los resultados del SDK se traducen con lista blanca (`sumupMapper.ts`) y hay pruebas que verifican que se descartan.
@@ -35,6 +35,39 @@ EXPO_OFFLINE=1 npx expo export --platform android   # verifica que el bundle com
 - **Idempotencia:** antes de cobrar se crea la venta en Supabase como `pending`, con un UUID generado en la app. Ese UUID es la referencia ante el proveedor.
 - **Claves secretas** del proveedor (API key de SumUp): nunca en la app. Reembolsos, historial del proveedor y verificación de ventas van por una Edge Function de Supabase (pendiente).
 - **Limitación conocida del MVP:** es la app la que marca la venta como `approved`. RLS y un trigger limitan qué cambios se permiten, pero la verificación real contra SumUp en el servidor queda pendiente.
+
+## Modo Prueba y modo Real (como Stripe)
+- Toda venta tiene `mode: 'test' | 'live'`. Los datos de un modo nunca se mezclan con los del otro: historial, resumen y tarjeta "Vendido hoy" filtran por el modo actual.
+- **Prueba (`test`):**
+  - Está disponible desde el registro y no exige verificación.
+  - Siempre usa `MockPaymentProvider`.
+  - Se ve una franja naranja "MODO PRUEBA" y la etiqueta "PRUEBA" en la tarjeta y el recibo.
+- **Real (`live`):**
+  - Solo se puede activar con la verificación de identidad **aprobada**.
+  - Usa el proveedor real (SumUp). Mientras el SDK no esté conectado, el cobro real falla con un mensaje claro.
+- Los comercios nuevos empiezan en modo Prueba.
+
+## Verificación de identidad del comercio (KYC)
+- Se hace con un proveedor especializado y un simulador, igual que con los pagos:
+  - interfaz `IdentityVerifier`;
+  - `MockIdentityVerifier` para demos;
+  - `TruoraIdentityVerifier` como esqueleto (Truora valida contra la Registraduría con selfie).
+- **Documentos aceptados para personas:**
+  - cédula de ciudadanía;
+  - cédula de extranjería;
+  - **PPT**, el único documento para venezolanos desde marzo de 2023 según la Superfinanciera;
+  - pasaporte.
+- **La licencia de conducción NO se acepta.**
+- **Empresas:** NIT/RUT, certificado de Cámara de Comercio y documento del representante legal.
+- **Datos personales (Ley 1581):**
+  - No guardamos fotos de documentos ni selfies; las captura el proveedor.
+  - Guardamos solo el estado, el tipo y número de documento, y la referencia del proveedor.
+  - La selfie es un dato biométrico, o sea sensible: exige una autorización expresa y separada que explique para qué se usa y que entregarlo es opcional.
+  - Hay que guardar la versión y la fecha de la autorización aceptada.
+- **El estado de la verificación lo cambia solo el servidor:** una Edge Function que recibe el webhook del proveedor. La app nunca puede marcarse a sí misma como "aprobada". La simulación solo se habilita en el proyecto de pruebas de Supabase.
+- **Pendiente con terceros:**
+  - Preguntar a SumUp qué documentos exige en Colombia y si tiene un registro para socios, para no verificar dos veces al comerciante.
+  - Que un abogado confirme si TAP es "proveedor de servicios de pago" (Decreto 1692 de 2020) y qué obligaciones SARLAFT le aplican.
 
 ## Dinero y fechas
 - Montos: **enteros en pesos colombianos** (sin centavos), en `bigint` en la base. Cada adaptador del proveedor convierte al formato que pida su SDK.
@@ -49,7 +82,6 @@ EXPO_OFFLINE=1 npx expo export --platform android   # verifica que el bundle com
   - n.º de ventas;
   - ticket promedio = total vendido ÷ ventas, redondeado, o 0 si no hay ventas.
   - Las ventas rechazadas o reembolsadas se muestran en el historial pero no suman.
-- Las ventas del mock (`provider = 'mock'`) se marcan como **DEMO** en el historial y en el recibo.
 
 ## Auth y datos
 - Ingreso **sin contraseña**: código de 6 dígitos por correo o por SMS (`signInWithOtp` / `verifyOtp`).
@@ -84,6 +116,16 @@ src/data/      Supabase
 src/ui/        tema y componentes
 supabase/      migraciones SQL + pruebas de RLS
 ```
+
+## Hoja de ruta
+1. ✅ Base del proyecto
+2. ✅ Teclado, propina y lógica de montos (diseño estilo Jim)
+3. ✅ Cobro simulado + modos Prueba/Real (`PaymentProvider`, mock, máquina de estados, "Acerque la tarjeta", resultado)
+4. Supabase: registro con código, datos del negocio (persona natural o empresa), migración con RLS
+5. Verificación de identidad (KYC) con simulador + esqueleto Truora; el modo Real se desbloquea al aprobarse
+6. Ventas guardadas en Supabase, historial por día y resumen del día
+7. Recibo digital (imagen para WhatsApp)
+8. Esqueleto `SumUpPaymentProvider` completo y guía del módulo nativo
 
 ## Forma de trabajo
 - Pasos pequeños. Cada paso termina con `npm run check` y el bundle de Android en verde, más instrucciones para probar en el celular.

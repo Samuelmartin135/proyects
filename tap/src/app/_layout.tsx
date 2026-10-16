@@ -24,6 +24,9 @@ export default function RootLayout() {
         }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="cobro/propina" options={{ headerShown: true, title: 'Propina' }} />
+        {/* Durante el cobro y en el resultado no se puede "deslizar para volver". */}
+        <Stack.Screen name="cobro/tarjeta" options={{ gestureEnabled: false }} />
+        <Stack.Screen name="cobro/resultado" options={{ gestureEnabled: false }} />
       </Stack>
     </>
   );

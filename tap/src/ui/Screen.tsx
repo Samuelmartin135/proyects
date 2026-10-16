@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { StyleSheet, View, type ViewStyle } from 'react-native';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 
+import { ModeBanner } from './ModeBanner';
 import { colors, spacing } from './theme';
 
 type Props = {
@@ -14,10 +15,14 @@ type Props = {
   edges?: Edge[];
 };
 
-/** Contenedor base de cada pantalla: fondo, márgenes y zona segura. */
+/**
+ * Contenedor base de cada pantalla: fondo, márgenes, zona segura y la franja
+ * "MODO PRUEBA" cuando corresponde.
+ */
 export function Screen({ children, style, edges = ['top'] }: Props) {
   return (
     <SafeAreaView edges={edges} style={styles.safe}>
+      <ModeBanner />
       <View style={[styles.content, style]}>{children}</View>
     </SafeAreaView>
   );
