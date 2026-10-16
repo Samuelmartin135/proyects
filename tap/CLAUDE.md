@@ -1,6 +1,6 @@
 # TAP: decisiones del proyecto
 
-App Android para que tiendas de barrio en Colombia cobren con tarjeta acercándola al celular (Tap to Phone).
+App (Android y iPhone) para que tiendas de barrio en Colombia cobren con tarjeta acercándola al celular (Tap to Phone / Tap to Pay on iPhone).
 Usuarios no técnicos: **simple, en español, botones grandes**.
 
 Guía general de Expo (versiones, comandos, reglas de CNG): @AGENTS.md
@@ -35,6 +35,23 @@ EXPO_OFFLINE=1 npx expo export --platform android   # verifica que el bundle com
 - **Idempotencia:** antes de cobrar se crea la venta en Supabase como `pending`, con un UUID generado en la app. Ese UUID es la referencia ante el proveedor.
 - **Claves secretas** del proveedor (API key de SumUp): nunca en la app. Reembolsos, historial del proveedor y verificación de ventas van por una Edge Function de Supabase (pendiente).
 - **Limitación conocida del MVP:** es la app la que marca la venta como `approved`. RLS y un trigger limitan qué cambios se permiten, pero la verificación real contra SumUp en el servidor queda pendiente.
+
+## Plataformas y pantalla de cobro nativa
+- **Android y iPhone**, con el mismo código (Expo). SumUp en los dos.
+- **La pantalla "acerque la tarjeta" en modo Real es la del sistema, no la nuestra:**
+  - En iPhone es la hoja **nativa de Apple "Tap to Pay on iPhone"** (ProximityReader). Muestra el negocio, el monto y la animación de la tarjeta, y la abre el SDK de SumUp.
+  - En Android es la pantalla del SDK de SumUp; Android no tiene una hoja del sistema equivalente.
+  - `PaymentProvider.showsOwnCardScreen = true` hace que TAP no dibuje la suya.
+- **Prohibido imitar la pantalla de Apple** (su diseño, el ícono de mano con tarjeta, "Hold Here to Pay"). Nuestra pantalla "Acerque la tarjeta" se usa solo en modo Prueba.
+- **Resultado (aprobado o rechazado):** la hoja de Apple solo lee la tarjeta; la decisión del banco llega después por SumUp. Siempre la mostramos en nuestra pantalla de resultado, con la vibración nativa del sistema (`expo-haptics`) y una animación de entrada.
+- **Requisitos de Apple:**
+  - Apple Developer Program como **organización**; el formulario del permiso solo lo ve el Account Holder.
+  - Pedir el permiso `com.apple.developer.proximity-reader.payment.acceptance`; puede tardar semanas.
+  - Tener un proveedor compatible en Colombia: SumUp o Symbiotic, desde septiembre de 2026.
+  - El permiso se agrega en `app.json → ios.entitlements` **solo cuando Apple lo apruebe**; antes rompe la compilación de iOS.
+  - Probar en un iPhone XS o posterior con iOS actualizado.
+  - Pendiente: confirmar con SumUp que su SDK de iOS ya habilita Tap to Pay en Colombia (en su documentación de desarrolladores aún no aparece).
+- Identificadores provisionales: `co.tapcobros.app` (Android `package` e iOS `bundleIdentifier`). Elegir los definitivos antes de publicar, porque después no se pueden cambiar.
 
 ## Modo Prueba y modo Real (como Stripe)
 - Toda venta tiene `mode: 'test' | 'live'`. Los datos de un modo nunca se mezclan con los del otro: historial, resumen y tarjeta "Vendido hoy" filtran por el modo actual.
@@ -125,7 +142,7 @@ supabase/      migraciones SQL + pruebas de RLS
 5. Verificación de identidad (KYC) con simulador + esqueleto Truora; el modo Real se desbloquea al aprobarse
 6. Ventas guardadas en Supabase, historial por día y resumen del día
 7. Recibo digital (imagen para WhatsApp)
-8. Esqueleto `SumUpPaymentProvider` completo y guía del módulo nativo
+8. Esqueleto `SumUpPaymentProvider` completo y guía del módulo nativo (Android + iOS con la hoja nativa de Apple)
 
 ## Forma de trabajo
 - Pasos pequeños. Cada paso termina con `npm run check` y el bundle de Android en verde, más instrucciones para probar en el celular.

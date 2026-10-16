@@ -14,13 +14,20 @@ jest.mock('@/services', () => {
 
 // Simulador controlado: cada espera queda pendiente hasta que la prueba la libere.
 const mockPending: (() => void)[] = [];
+// Si es true, el proveedor simula a SumUp: la pantalla de la tarjeta la pone el sistema.
+let mockNativeScreen = false;
 jest.mock('@/payments', () => {
   const { MockPaymentProvider } = jest.requireActual('@/payments/MockPaymentProvider');
   const provider = new MockPaymentProvider({
     sleep: () => new Promise<void>((resolve) => mockPending.push(resolve)),
     random: () => 0,
   });
-  return { getPaymentProvider: () => provider };
+  return {
+    getPaymentProvider: () => {
+      Object.defineProperty(provider, 'showsOwnCardScreen', { value: mockNativeScreen, configurable: true });
+      return provider;
+    },
+  };
 });
 
 let mockParams: Record<string, string> = {};
@@ -40,6 +47,7 @@ describe('Pantalla "Acerque la tarjeta"', () => {
     resetModeForTests();
     mockReplace.mockClear();
     mockPending.length = 0;
+    mockNativeScreen = false;
   });
 
   it('muestra el total, pide la tarjeta y al aprobarse va al resultado', async () => {
@@ -86,5 +94,23 @@ describe('Pantalla "Acerque la tarjeta"', () => {
       status: 'canceled',
       reason: 'Cobro cancelado.',
     });
+  });
+
+  it('si el proveedor muestra su propia pantalla (Apple / SumUp), no dibuja la nuestra', async () => {
+    mockNativeScreen = true;
+    mockParams = { amount: '12500', tip: '0' };
+    await render(<TarjetaScreen />);
+
+    expect(screen.getByTestId('native-card-screen')).toBeOnTheScreen();
+    expect(screen.getByText('Siga las instrucciones en la pantalla de pago.')).toBeOnTheScreen();
+    expect(screen.queryByTestId('card-title')).toBeNull();
+    expect(screen.queryByTestId('cancel-charge')).toBeNull(); // la pantalla nativa trae su propio botón
+
+    // El cobro igual corre y termina en la pantalla de resultado.
+    await releaseNextWait();
+    await releaseNextWait();
+    await releaseNextWait();
+    await waitFor(() => expect(mockReplace).toHaveBeenCalled());
+    expect(mockReplace.mock.calls[0][0].params).toMatchObject({ status: 'approved' });
   });
 });

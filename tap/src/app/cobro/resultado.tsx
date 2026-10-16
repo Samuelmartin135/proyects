@@ -1,7 +1,8 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
+import * as Haptics from 'expo-haptics';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, type ComponentProps } from 'react';
-import { BackHandler, StyleSheet, View } from 'react-native';
+import { useEffect, useState, type ComponentProps } from 'react';
+import { Animated, BackHandler, StyleSheet, View } from 'react-native';
 
 import { formatCOP, parseAmountParam } from '@/lib/money';
 import type { ChargeOutcome } from '@/payments/PaymentProvider';
@@ -45,6 +46,22 @@ export default function ResultadoScreen() {
   const look = LOOK[outcome];
   const approved = outcome === 'approved';
 
+  // Sensación nativa: vibración de "éxito" o "error" del sistema y el ícono
+  // que aparece con un pequeño rebote.
+  const [pop] = useState(() => new Animated.Value(0.6));
+  useEffect(() => {
+    Animated.spring(pop, { toValue: 1, friction: 5, tension: 120, useNativeDriver: true }).start();
+    const feedback =
+      outcome === 'approved'
+        ? Haptics.NotificationFeedbackType.Success
+        : outcome === 'canceled'
+          ? Haptics.NotificationFeedbackType.Warning
+          : Haptics.NotificationFeedbackType.Error;
+    Haptics.notificationAsync(feedback).catch(() => {
+      // Algunos celulares no vibran: no pasa nada.
+    });
+  }, [outcome, pop]);
+
   /** Vuelve a la pantalla "Cobrar", lista para la siguiente venta. */
   const newCharge = () => router.dismissAll();
 
@@ -60,9 +77,10 @@ export default function ResultadoScreen() {
   return (
     <Screen edges={['top', 'bottom']} style={styles.screen}>
       <View style={styles.center}>
-        <View style={[styles.iconCircle, { backgroundColor: look.soft }]}>
+        <Animated.View
+          style={[styles.iconCircle, { backgroundColor: look.soft, transform: [{ scale: pop }] }]}>
           <Ionicons name={look.icon} size={88} color={look.color} />
-        </View>
+        </Animated.View>
 
         <AppText variant="title" style={[styles.title, { color: look.color }]} testID="result-title">
           {look.title}

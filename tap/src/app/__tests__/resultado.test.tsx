@@ -1,4 +1,5 @@
 import { render, screen, userEvent } from '@testing-library/react-native';
+import * as Haptics from 'expo-haptics';
 
 import ResultadoScreen from '../cobro/resultado';
 
@@ -28,6 +29,20 @@ describe('Pantalla de resultado', () => {
 
     await user.press(screen.getByTestId('new-charge'));
     expect(mockDismissAll).toHaveBeenCalled();
+  });
+
+  it('vibra como el sistema: "éxito" si aprueba y "error" si rechaza', async () => {
+    const notify = jest.mocked(Haptics.notificationAsync);
+    notify.mockClear();
+
+    mockParams = { status: 'approved', amount: '1000' };
+    const { unmount } = await render(<ResultadoScreen />);
+    expect(notify).toHaveBeenLastCalledWith(Haptics.NotificationFeedbackType.Success);
+    await unmount();
+
+    mockParams = { status: 'declined', amount: '1000' };
+    await render(<ResultadoScreen />);
+    expect(notify).toHaveBeenLastCalledWith(Haptics.NotificationFeedbackType.Error);
   });
 
   it('rechazado: muestra el motivo y permite intentar de nuevo con el mismo valor', async () => {

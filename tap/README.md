@@ -1,12 +1,12 @@
 # TAP
 
-Cobros con tarjeta acercándola al celular (Tap to Phone) para pequeños negocios en Colombia.
+Cobros con tarjeta acercándola al celular (Tap to Phone en Android, Tap to Pay on iPhone) para pequeños negocios en Colombia.
 
-> Estado: MVP en construcción. Por ahora los cobros son **simulados** (modo DEMO); todavía no se mueve dinero real.
+> Estado: MVP en construcción. Por ahora los cobros son **simulados** (modo Prueba); todavía no se mueve dinero real.
 
 ## Requisitos
 - Node.js 20 o superior
-- Un celular Android
+- Un celular Android o un iPhone
 - Una cuenta gratis en [expo.dev](https://expo.dev), para compilar la app de desarrollo en la nube
 
 ## Instalar
@@ -19,11 +19,11 @@ cp .env.example .env   # luego complete los valores (ver comentarios en el archi
 
 ## Probar en su celular
 
-### Opción A: rápida, con Expo Go
-Sirve mientras la app no use el SDK de SumUp.
-1. Instale **Expo Go** desde Play Store.
+### Opción A: rápida, con Expo Go (Android o iPhone)
+Sirve para todo el modo Prueba, mientras la app no use el SDK de SumUp.
+1. Instale **Expo Go** desde Play Store o App Store.
 2. En el computador ejecute `npm run start:go`.
-3. Abra Expo Go y escanee el código QR. El celular y el computador deben estar en la misma red Wi-Fi; si no funciona, use `npx expo start --tunnel`.
+3. Escanee el código QR: en Android, con Expo Go; en iPhone, con la cámara. El celular y el computador deben estar en la misma red Wi-Fi; si no funciona, use `npx expo start --tunnel`.
 
 ### Opción B: development build
 Es la opción recomendada y la que se necesitará con SumUp.
@@ -36,6 +36,8 @@ Es la opción recomendada y la que se necesitará con SumUp.
 3. Inicie el servidor con `npm start` y escanee el QR con la app **TAP** recién instalada. También puede abrirla y elegir el servidor de la lista.
 
 Solo hay que volver a compilar (paso 1) si cambian las dependencias nativas o `app.json`. Los cambios de código se ven al instante.
+
+En iPhone, el development build exige una cuenta paga de Apple Developer ($99 USD al año) y registrar el iPhone: `npx eas-cli@latest device:create`, y luego compilar con `--platform ios`. Para cobrar de verdad con la pantalla nativa de Apple (Tap to Pay on iPhone) la cuenta debe ser de **organización** y Apple debe aprobar un permiso especial (ver `CLAUDE.md`).
 
 ## Comandos
 | Comando | Qué hace |

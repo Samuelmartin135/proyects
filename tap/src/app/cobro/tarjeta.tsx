@@ -77,6 +77,27 @@ export default function TarjetaScreen() {
     );
   }
 
+  // Modo Real con SumUp: la lectura de la tarjeta la muestra el sistema
+  // (en iPhone, la pantalla nativa de Apple "Tap to Pay on iPhone"; en Android,
+  // la del SDK de SumUp). Esa pantalla queda encima y trae su propio botón
+  // para cancelar; aquí solo dejamos un fondo sencillo.
+  if (provider.showsOwnCardScreen) {
+    return (
+      <Screen edges={['top', 'bottom']} style={styles.screen}>
+        <View style={styles.center} testID="native-card-screen">
+          <AppText muted>Total a cobrar</AppText>
+          <AppText style={styles.total} testID="card-total">
+            {formatCOP(amount + tip)}
+          </AppText>
+          <ActivityIndicator size="large" color={colors.text} />
+          <AppText muted style={styles.text}>
+            Siga las instrucciones en la pantalla de pago.
+          </AppText>
+        </View>
+      </Screen>
+    );
+  }
+
   const copy = phaseCopy(state);
   const waitingCard = state.phase === 'waiting_card' && !state.cancelRequested;
 
