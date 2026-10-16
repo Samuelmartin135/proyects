@@ -60,9 +60,18 @@ EXPO_OFFLINE=1 npx expo export --platform android   # verifica que el bundle com
 
 ## Interfaz y textos
 - Se trata al usuario de **usted**. Textos de pantalla y comentarios en español; nombres de código en inglés.
-- Usar los componentes de `src/ui/` (`Screen`, `AppText`, `BigButton`) y los valores de `theme.ts`.
+- **Diseño estilo Jim** (pedido del dueño):
+  - Fondo blanco, botón principal negro en forma de píldora y tarjeta negra arriba en "Cobrar".
+  - El teclado no tiene bordes y los números van en negro. Jim los usa en gris claro, pero aquí se prioriza que se lean bien.
+  - Verde y rojo se usan solo para "Aprobado" y "Rechazado".
+- **La tarjeta negra NO muestra un saldo**, porque TAP no guarda dinero (el proveedor le paga al comerciante en su banco). Muestra "Vendido hoy" y el número de ventas. No usar logos de Visa ni "Agregar a Wallet".
+- Usar los componentes de `src/ui/` (`Screen`, `AppText`, `BigButton`, `Keypad`, `SalesCard`…) y los valores de `theme.ts`.
   - Mínimo táctil: 64 dp.
   - Monto: 56 sp.
+- **Capturas para revisar el diseño:** hay un export web (`react-native-web` está solo como dependencia de desarrollo):
+  1. `EXPO_OFFLINE=1 npx expo export --platform web --output-dir <carpeta>`.
+  2. Servir la carpeta y tomar capturas con Playwright (Chromium en `/opt/pw-browsers`), en 393×851 y 360×720.
+  3. En las pruebas, los íconos se reemplazan en `jest.setup.ts`.
 - Recibo: **imagen** (`react-native-view-shot` + `expo-sharing`) que se comparte por WhatsApp. El enlace web queda para después.
 
 ## Estructura

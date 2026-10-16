@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
-import { colors } from '@/ui/theme';
+import { colors, fontSize } from '@/ui/theme';
 
 /**
  * Raíz de la navegación.
@@ -16,8 +16,14 @@ export default function RootLayout() {
         screenOptions={{
           headerShown: false,
           contentStyle: { backgroundColor: colors.background },
+          // Encabezado de las pantallas internas (propina, tarjeta, recibo…).
+          headerStyle: { backgroundColor: colors.surface },
+          headerTintColor: colors.text,
+          headerTitleStyle: { fontSize: fontSize.button, fontWeight: '800' },
+          headerShadowVisible: false,
         }}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="cobro/propina" options={{ headerShown: true, title: 'Propina' }} />
       </Stack>
     </>
   );

@@ -13,7 +13,7 @@
     "android": {
       "package": "co.tapcobros.app",
       "adaptiveIcon": {
-        "backgroundColor": "#2443D6",
+        "backgroundColor": "#111111",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -25,7 +25,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#2443D6",
+          "backgroundColor": "#111111",
           "image": "./assets/splash-icon.png",
           "imageWidth": 120
         }

@@ -72,7 +72,7 @@ const PALETTES: Record<
 const styles = StyleSheet.create({
   button: {
     minHeight: MIN_TOUCH,
-    borderRadius: radius.md,
+    borderRadius: radius.pill,
     paddingHorizontal: spacing.lg,
     alignItems: 'center',
     justifyContent: 'center',
