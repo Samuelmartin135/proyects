@@ -17,6 +17,7 @@ npm test              # pruebas
 npm run typecheck     # tsc --noEmit
 npm run lint          # expo lint
 npm run check         # las tres
+npm run test:db       # migraciones + pruebas de RLS en un Postgres local (supabase/tests)
 npx expo start --dev-client
 EXPO_OFFLINE=1 npx expo export --platform android   # verifica que el bundle compila
 ```
@@ -101,11 +102,24 @@ EXPO_OFFLINE=1 npx expo export --platform android   # verifica que el bundle com
   - Las ventas rechazadas o reembolsadas se muestran en el historial pero no suman.
 
 ## Auth y datos
-- Ingreso **sin contraseña**: código de 6 dígitos por correo o por SMS (`signInWithOtp` / `verifyOtp`).
-  - Celular colombiano: 10 dígitos que empiezan por 3, normalizado a `+57…`.
-  - En el primer ingreso se pide nombre y tipo de negocio (tabla `merchants`).
-- Tablas: `merchants` (1 dueño = 1 comercio en el MVP) y `sales`. RLS en todas.
-- Sesión guardada cifrada (patrón LargeSecureStore: clave en SecureStore y datos cifrados con AES).
+- **Ingreso sin contraseña:** código de 6 dígitos por correo o por SMS (`src/auth/otp.ts`, con `signInWithOtp` / `verifyOtp`).
+  - Celular colombiano: 10 dígitos que empiezan por 3, normalizado a `+57…` (`src/lib/contact.ts`).
+  - Los errores de Supabase se traducen al español en `authErrors.ts`; nunca se muestra el texto en inglés.
+- **Rutas protegidas** con `Stack.Protected`, según `deriveAuthStatus`:
+  - `signedOut` → `/ingresar` (con `/ingresar/codigo` dentro);
+  - `needsBusiness` → `/negocio`;
+  - `ready` → pestañas y cobro.
+  - Ojo: cada grupo protegido debe tener **una sola** pantalla raíz con `index`. Si hay varias hermanas, Expo redirige a la primera en orden alfabético y no a la declarada.
+- **Sin Supabase configurado** (sin `.env`), la app arranca en **modo demo sin cuenta**: `AuthProvider` entrega un negocio de ejemplo.
+- **Tablas:**
+  - `merchants`: 1 dueño = 1 comercio en el MVP; incluye `legal_type` = persona natural o empresa.
+  - `sales`: incluye `mode`.
+  - RLS en todas, más permisos por columna y triggers que imponen las transiciones de estado.
+  - Los reembolsos solo los registra el servidor (`service_role`).
+  - `is_live_enabled()` devuelve `false` hasta el paso 5.
+- **Paso 6 (pendiente):** al guardar el resultado, si Supabase responde "La venta ya está en estado X" en un reintento, leer la venta y darla por guardada si el estado coincide.
+- **Sesión cifrada** con el patrón LargeSecureStore: la clave va en SecureStore y los datos cifrados con AES en AsyncStorage.
+- **Configuración del panel de Supabase:** `supabase/README.md`. Incluye la plantilla de correo con `{{ .Token }}` y los números de prueba para SMS.
 
 ## Interfaz y textos
 - Se trata al usuario de **usted**. Textos de pantalla y comentarios en español; nombres de código en inglés.
@@ -138,7 +152,7 @@ supabase/      migraciones SQL + pruebas de RLS
 1. ✅ Base del proyecto
 2. ✅ Teclado, propina y lógica de montos (diseño estilo Jim)
 3. ✅ Cobro simulado + modos Prueba/Real (`PaymentProvider`, mock, máquina de estados, "Acerque la tarjeta", resultado)
-4. Supabase: registro con código, datos del negocio (persona natural o empresa), migración con RLS
+4. ✅ Supabase: registro con código, datos del negocio (persona natural o empresa), migración con RLS
 5. Verificación de identidad (KYC) con simulador + esqueleto Truora; el modo Real se desbloquea al aprobarse
 6. Ventas guardadas en Supabase, historial por día y resumen del día
 7. Recibo digital (imagen para WhatsApp)

@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
+import { useAuth } from '@/auth/AuthProvider';
 import { useDaySales } from '@/data/useDaySales';
 import { todayKey } from '@/lib/dates';
 import { applyKeypadKey, formatCOP, validateSaleAmount } from '@/lib/money';
@@ -27,8 +28,8 @@ export default function CobrarScreen() {
   const mode = useAppMode();
   const today = useDaySales(todayKey(), mode);
   const { totalSold, salesCount } = summarizeSales(today);
-  // TODO(paso 4): nombre real del negocio.
-  const businessName = 'Su negocio';
+  const { merchant } = useAuth();
+  const businessName = merchant?.businessName ?? 'Su negocio';
 
   const validation = validateSaleAmount(amount);
   // Solo mostramos el aviso cuando ya hay algo digitado: en $0 sería ruido.

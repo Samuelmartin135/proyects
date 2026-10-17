@@ -1,8 +1,11 @@
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
 
+import { useAuth } from '@/auth/AuthProvider';
 import { APP_NAME } from '@/config/app';
-import { setMode, useAppMode, isLiveUnlocked } from '@/mode/modeStore';
+import { businessTypeLabel, legalTypeLabel } from '@/lib/business';
+import { isLiveUnlocked, setMode, useAppMode } from '@/mode/modeStore';
 import { AppText } from '@/ui/AppText';
+import { BigButton } from '@/ui/BigButton';
 import { ChoiceButton } from '@/ui/ChoiceButton';
 import { Screen } from '@/ui/Screen';
 import { colors, radius, spacing } from '@/ui/theme';
@@ -15,23 +18,47 @@ const TEST_AMOUNTS = [
   { example: 'Cualquier otro', result: 'Aprobado' },
 ];
 
-/**
- * Pestaña "Cuenta": modo Prueba / Real (como Stripe) y datos del negocio.
- * Los datos del negocio y cerrar sesión llegan en el paso 4.
- */
+/** Pestaña "Cuenta": datos del negocio, modo Prueba / Real (como Stripe) y cerrar sesión. */
 export default function CuentaScreen() {
   const mode = useAppMode();
   const liveLocked = !isLiveUnlocked();
+  const { merchant, contactLabel, configured, signOut } = useAuth();
 
   function chooseLive() {
     const change = setMode('live');
     if (!change.ok) Alert.alert('Modo Real', change.reason);
   }
 
+  function confirmSignOut() {
+    Alert.alert('Cerrar sesión', '¿Seguro que quiere salir? Para volver a entrar le enviaremos un código.', [
+      { text: 'Cancelar', style: 'cancel' },
+      { text: 'Salir', style: 'destructive', onPress: () => void signOut() },
+    ]);
+  }
+
   return (
     <Screen>
       <ScrollView contentContainerStyle={styles.scroll}>
         <AppText variant="title">Cuenta</AppText>
+
+        <View style={styles.card} testID="business-card">
+          <AppText variant="label">{merchant?.businessName ?? 'Su negocio'}</AppText>
+          {merchant ? (
+            <AppText variant="small" muted>
+              {businessTypeLabel(merchant.businessType)} · {legalTypeLabel(merchant.legalType)}
+            </AppText>
+          ) : null}
+          {contactLabel ? (
+            <AppText variant="small" muted>
+              Ingresó con {contactLabel}
+            </AppText>
+          ) : null}
+          {!configured ? (
+            <AppText variant="small" muted>
+              Modo demo sin cuenta: falta conectar Supabase para registrarse.
+            </AppText>
+          ) : null}
+        </View>
 
         <View style={styles.section}>
           <AppText variant="label">Modo</AppText>
@@ -85,6 +112,10 @@ export default function CuentaScreen() {
           </View>
         ) : null}
 
+        {configured ? (
+          <BigButton testID="sign-out" label="Cerrar sesión" variant="secondary" onPress={confirmSignOut} />
+        ) : null}
+
         <AppText variant="small" muted>
           {APP_NAME} · versión de prueba
         </AppText>
@@ -99,6 +130,13 @@ const styles = StyleSheet.create({
   },
   section: {
     gap: spacing.sm,
+  },
+  card: {
+    gap: spacing.xs,
+    padding: spacing.md,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   row: {
     flexDirection: 'row',

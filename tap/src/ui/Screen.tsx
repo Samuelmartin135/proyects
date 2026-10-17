@@ -13,16 +13,18 @@ type Props = {
    * En pantallas con pestañas abajo, la barra ya protege el borde inferior.
    */
   edges?: Edge[];
+  /** Franja "MODO PRUEBA". Se oculta en las pantallas de ingreso y registro. */
+  showModeBanner?: boolean;
 };
 
 /**
  * Contenedor base de cada pantalla: fondo, márgenes, zona segura y la franja
  * "MODO PRUEBA" cuando corresponde.
  */
-export function Screen({ children, style, edges = ['top'] }: Props) {
+export function Screen({ children, style, edges = ['top'], showModeBanner = true }: Props) {
   return (
     <SafeAreaView edges={edges} style={styles.safe}>
-      <ModeBanner />
+      {showModeBanner ? <ModeBanner /> : null}
       <View style={[styles.content, style]}>{children}</View>
     </SafeAreaView>
   );

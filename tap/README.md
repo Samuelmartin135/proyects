@@ -17,6 +17,8 @@ npm install
 cp .env.example .env   # luego complete los valores (ver comentarios en el archivo)
 ```
 
+Para registrarse e ingresar con código hace falta un proyecto de Supabase; siga [`supabase/README.md`](./supabase/README.md). Sin él, la app abre en **modo demo sin cuenta**.
+
 ## Probar en su celular
 
 ### Opción A: rápida, con Expo Go (Android o iPhone)
@@ -48,5 +50,6 @@ En iPhone, el development build exige una cuenta paga de Apple Developer ($99 US
 | `npm run typecheck` | Revisión de tipos TypeScript |
 | `npm run lint` | Revisión de estilo |
 | `npm run check` | Las tres anteriores |
+| `npm run test:db` | Pruebas de seguridad de la base de datos (Postgres local) |
 
 Las decisiones de diseño y técnicas están en [`CLAUDE.md`](./CLAUDE.md).
