@@ -27,6 +27,14 @@ Sirve para todo el modo Prueba, mientras la app no use el SDK de SumUp.
 2. En el computador ejecute `npm run start:go`.
 3. Escanee el código QR: en Android, con Expo Go; en iPhone, con la cámara. El celular y el computador deben estar en la misma red Wi-Fi; si no funciona, use `npm run start:tunnel`.
 
+### Opción sin instalar nada: en el navegador
+Sirve para el modo Prueba completo, sin instalar apps en el celular.
+1. En el computador ejecute `npm run web`. Se abre TAP en el navegador.
+2. Para verla del tamaño de un celular en Chrome, presione `Cmd + Option + I` y luego `Cmd + Shift + M`.
+3. Para verla en el iPhone: con el mismo Wi-Fi, abra en Safari `http://IP-DEL-COMPUTADOR:8081`. En Mac, la IP se ve con `ipconfig getifaddr en0`.
+
+La vibración y el NFC no funcionan en el navegador; todo lo demás sí.
+
 ### Opción B: development build
 Es la opción recomendada y la que se necesitará con SumUp.
 1. Compile una vez la app de desarrollo en la nube de Expo:
@@ -47,6 +55,7 @@ En iPhone, el development build exige una cuenta paga de Apple Developer ($99 US
 | `npm start` | Servidor de desarrollo para la app de desarrollo |
 | `npm run start:go` | Servidor de desarrollo para Expo Go |
 | `npm run start:tunnel` | Igual, pero funciona aunque el celular esté en otra red |
+| `npm run web` | Abre TAP en el navegador (sin instalar nada en el celular) |
 | `npm test` | Pruebas |
 | `npm run typecheck` | Revisión de tipos TypeScript |
 | `npm run lint` | Revisión de estilo |

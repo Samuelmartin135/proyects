@@ -49,7 +49,8 @@
     "lint": "expo lint",
     "check": "npm run typecheck && npm run lint && npm test",
     "test:db": "bash supabase/tests/run-local.sh",
-    "start:tunnel": "expo start --go --tunnel"
+    "start:tunnel": "expo start --go --tunnel",
+    "web": "expo start --web"
   },
   "private": true,
   "jest": {
