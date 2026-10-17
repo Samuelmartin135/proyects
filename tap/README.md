@@ -25,7 +25,7 @@ Para registrarse e ingresar con código hace falta un proyecto de Supabase; siga
 Sirve para todo el modo Prueba, mientras la app no use el SDK de SumUp.
 1. Instale **Expo Go** desde Play Store o App Store.
 2. En el computador ejecute `npm run start:go`.
-3. Escanee el código QR: en Android, con Expo Go; en iPhone, con la cámara. El celular y el computador deben estar en la misma red Wi-Fi; si no funciona, use `npx expo start --tunnel`.
+3. Escanee el código QR: en Android, con Expo Go; en iPhone, con la cámara. El celular y el computador deben estar en la misma red Wi-Fi; si no funciona, use `npm run start:tunnel`.
 
 ### Opción B: development build
 Es la opción recomendada y la que se necesitará con SumUp.
@@ -46,6 +46,7 @@ En iPhone, el development build exige una cuenta paga de Apple Developer ($99 US
 | --- | --- |
 | `npm start` | Servidor de desarrollo para la app de desarrollo |
 | `npm run start:go` | Servidor de desarrollo para Expo Go |
+| `npm run start:tunnel` | Igual, pero funciona aunque el celular esté en otra red |
 | `npm test` | Pruebas |
 | `npm run typecheck` | Revisión de tipos TypeScript |
 | `npm run lint` | Revisión de estilo |

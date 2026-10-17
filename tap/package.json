@@ -41,14 +41,15 @@
   },
   "scripts": {
     "start": "expo start --dev-client",
-    "start:go": "expo start",
+    "start:go": "expo start --go",
     "android": "expo run:android",
     "test": "jest",
     "test:watch": "jest --watch",
     "typecheck": "tsc --noEmit",
     "lint": "expo lint",
     "check": "npm run typecheck && npm run lint && npm test",
-    "test:db": "bash supabase/tests/run-local.sh"
+    "test:db": "bash supabase/tests/run-local.sh",
+    "start:tunnel": "expo start --go --tunnel"
   },
   "private": true,
   "jest": {
