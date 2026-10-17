@@ -2,7 +2,7 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Platform, StyleSheet, View } from 'react-native';
 
 import { AuthProvider, useAuth } from '@/auth/AuthProvider';
 import { AppText } from '@/ui/AppText';
@@ -16,7 +16,17 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <StatusBar style="dark" />
-      <RootNavigator />
+      {Platform.OS === 'web' ? (
+        // En el navegador (demo web) la app se ve del ancho de un celular,
+        // centrada, en vez de estirarse por toda la pantalla del computador.
+        <View style={styles.webBackdrop}>
+          <View style={styles.webPhone}>
+            <RootNavigator />
+          </View>
+        </View>
+      ) : (
+        <RootNavigator />
+      )}
     </AuthProvider>
   );
 }
@@ -87,6 +97,18 @@ function RootNavigator() {
 }
 
 const styles = StyleSheet.create({
+  webBackdrop: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#E9E9EC',
+  },
+  webPhone: {
+    flex: 1,
+    width: '100%',
+    maxWidth: 480,
+    backgroundColor: colors.background,
+    overflow: 'hidden',
+  },
   center: {
     flex: 1,
     alignItems: 'center',

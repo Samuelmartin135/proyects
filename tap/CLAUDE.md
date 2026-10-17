@@ -148,6 +148,12 @@ src/ui/        tema y componentes
 supabase/      migraciones SQL + pruebas de RLS
 ```
 
+## Demo web
+- `npm run web` abre la app en el navegador (requiere `react-native-web`, que está como dependencia de desarrollo).
+- En la web, la app se ve centrada con ancho de celular (máximo 480 px; ver `src/app/_layout.tsx`).
+- Hay demo pública en **Vercel** (`vercel.json`, Root Directory `tap`): export estático con reescritura a `index.html`.
+- La demo **no** lleva variables de Supabase, así que corre en modo demo sin cuenta.
+
 ## Hoja de ruta
 1. ✅ Base del proyecto
 2. ✅ Teclado, propina y lógica de montos (diseño estilo Jim)

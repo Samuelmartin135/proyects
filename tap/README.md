@@ -35,6 +35,9 @@ Sirve para el modo Prueba completo, sin instalar apps en el celular.
 
 La vibración y el NFC no funcionan en el navegador; todo lo demás sí.
 
+### Demo pública en Vercel
+`vercel.json` ya tiene la configuración. En Vercel: importar el repositorio, poner **Root Directory = `tap`** y desplegar. La demo funciona en modo Prueba y sin cuenta, así que no hace falta configurar variables de entorno.
+
 ### Opción B: development build
 Es la opción recomendada y la que se necesitará con SumUp.
 1. Compile una vez la app de desarrollo en la nube de Expo:
